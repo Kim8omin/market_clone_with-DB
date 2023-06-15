@@ -2,11 +2,16 @@ const form=document.getElementById('write-form');
 
 const handleSubmitForm = async (event) => {
     event.preventDefault();
-    await fetch ("/items", {
+    try {
+        const res = await fetch ("/items", {
         method: "POST",
         body: new FormData(form)
     });
-    console.log('제출 성공');
+    const data = await res.json();
+    if (data === "200") window.location.pathname= "/";
+   }catch (e) {
+    console.error(e);
+   }
 };
 
 
