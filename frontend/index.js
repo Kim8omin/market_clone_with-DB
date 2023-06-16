@@ -1,8 +1,32 @@
+const calTime = (timestamp) => {
+    const curTime = new Date().getTime() -9*60*60*1000;
+    const time = new Date(curTime -timestamp);
+    const hour = time.getHours();
+    const minute = time.getMinutes();
+    const second = time.getSeconds();
+
+    if (hour>0) return `${hour}시간 전`;
+    else if (minute>0) return `${minute}분 전`;
+    else if (second>0) return `${second}초 전`;
+    else return '방금 전';
+};
+
+
+
 const renderData = (data) => {
     const main =document.querySelector("main");
-    data.forEach((obj) => {
+    data.reverse().forEach(async (obj) => {
       const div = document.createElement("div");
       div.className = "item-list";
+
+      const imgDiv= document.createElement("div");
+      imgDiv.className="item-list__img";
+      
+      const img= document.createElement("img");
+      const res = await fetch(`/images/${obj.id}`);
+      const blob = await res.blob();
+      const url=URL.createObjectURL(blob);
+      img.src = url;
 
       const infoDiv = document.createElement("div");
       infoDiv.className = "item-list__info";
@@ -13,15 +37,18 @@ const renderData = (data) => {
 
       const infoMetaDiv = document.createElement("div");
       infoMetaDiv.className = "info__meta";
-      infoMetaDiv.innerText=obj.place;
+      infoMetaDiv.innerText=obj.place + " " + calTime(obj.insertAt);
 
       const infoPriceDiv = document.createElement("div");
       infoPriceDiv.className = "info__price";
       infoPriceDiv.innerText=obj.price;
 
+      imgDiv.appendChild(img);
+
       infoDiv.appendChild(infoTitleDiv);
       infoDiv.appendChild(infoMetaDiv);
       infoDiv.appendChild(infoPriceDiv);
+      div.appendChild(imgDiv);
       div.appendChild(infoDiv);
       main.appendChild(div);
     });
